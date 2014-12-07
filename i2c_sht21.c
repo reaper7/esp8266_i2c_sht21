@@ -3,22 +3,31 @@
 #include "driver/i2c.h"
 #include "driver/i2c_sht21.h"
 
-void ICACHE_FLASH_ATTR
+bool ICACHE_FLASH_ATTR
 SHT21_SoftReset()
 {
   //Soft reset the SHT21
   i2c_start();
   i2c_writeByte(SHT21_ADDRESS);
-  i2c_check_ack();
+  if (!i2c_check_ack()) {
+    //os_printf("-%s-%s slave not ack... return \r\n", __FILE__, __func__);
+    i2c_stop();
+    return(0);
+  }
   i2c_writeByte(SOFT_RESET);
-  i2c_check_ack();
+  if (!i2c_check_ack()) {
+    //os_printf("-%s-%s slave not ack... return \r\n", __FILE__, __func__);
+    i2c_stop();
+    return(0);
+  }
   i2c_stop();
+  return(1);
 }
 
-void ICACHE_FLASH_ATTR
+bool ICACHE_FLASH_ATTR
 SHT21_Init()
 {
-  SHT21_SoftReset();
+  return(SHT21_SoftReset());
 }
 
 int16_t ICACHE_FLASH_ATTR

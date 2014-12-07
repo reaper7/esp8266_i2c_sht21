@@ -20,8 +20,8 @@ enum {
     GET_SHT_HUMIDITY
 };
 
-void SHT21_Init(void);
-int16_t SHT21_GetVal(uint8 mode); //0->temperature; !=0->humidity
-void SHT21_SoftReset(void);
+bool SHT21_Init(void);
+int16_t SHT21_GetVal(uint8 mode);
+bool SHT21_SoftReset(void);
 
 #endif
