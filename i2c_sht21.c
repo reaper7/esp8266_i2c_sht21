@@ -2,7 +2,6 @@
 
 #include "driver/i2c.h"
 #include "driver/i2c_sht21.h"
-#include "osapi.h"
 
 void ICACHE_FLASH_ATTR
 SHT21_SoftReset()
@@ -22,8 +21,8 @@ SHT21_Init()
   SHT21_SoftReset();
 }
 
-int ICACHE_FLASH_ATTR
-SHT21_GetVal(uint8 val)
+int16_t ICACHE_FLASH_ATTR
+SHT21_GetVal(uint8 mode)
 {
   i2c_start(); //Start i2c
   i2c_writeByte(SHT21_ADDRESS);
@@ -33,11 +32,13 @@ SHT21_GetVal(uint8 val)
     return(0);
   }
 
-  if (val==0)
+  if (mode==GET_SHT_TEMPERATURE)
     i2c_writeByte(TRIGGER_TEMP_MEASURE_NOHOLD);
-  else
+  else if (mode==GET_SHT_HUMIDITY)
     i2c_writeByte(TRIGGER_HUMD_MEASURE_NOHOLD);
-  
+  else
+    return 0;
+    
   if (!i2c_check_ack()) {
     //os_printf("-%s-%s slave not ack... return \r\n", __FILE__, __func__);
     i2c_stop();
@@ -73,17 +74,17 @@ SHT21_GetVal(uint8 val)
 
   float rv = _rv;
   
-  if (val==0) {
+  if (mode==GET_SHT_TEMPERATURE) {
     rv *= 175.72;
     rv /= 65536;
     rv -= 46.85;
     //os_printf("-%s-%s T:%d \r\n", __FILE__, __func__,(int)(rv*10)); 
-  } else {
+  } else if (mode==GET_SHT_HUMIDITY) {
     rv *= 125.0;
     rv /= 65536;
     rv -= 6.0; 
     //os_printf("-%s-%s H:%d \r\n", __FILE__, __func__,(int)(rv*10));
   }
   
-  return (int)(rv*10);
+  return (int16_t)(rv*10);
 }

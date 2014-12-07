@@ -15,8 +15,13 @@
 #define READ_USER_REG  0xE7
 #define SOFT_RESET  0xFE
 
+enum {
+    GET_SHT_TEMPERATURE = 0,
+    GET_SHT_HUMIDITY
+};
+
 void SHT21_Init(void);
-int SHT21_GetVal(uint8 val); //0->temperature; !=0->humidity
+int16_t SHT21_GetVal(uint8 mode); //0->temperature; !=0->humidity
 void SHT21_SoftReset(void);
 
 #endif
