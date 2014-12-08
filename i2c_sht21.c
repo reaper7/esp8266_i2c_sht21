@@ -87,12 +87,10 @@ SHT21_GetVal(uint8 mode)
     rv *= 175.72;
     rv /= 65536;
     rv -= 46.85;
-    //os_printf("-%s-%s T:%d \r\n", __FILE__, __func__,(int)(rv*10)); 
   } else if (mode==GET_SHT_HUMIDITY) {
     rv *= 125.0;
     rv /= 65536;
     rv -= 6.0; 
-    //os_printf("-%s-%s H:%d \r\n", __FILE__, __func__,(int)(rv*10));
   }
   
   return (int16_t)(rv*10);
